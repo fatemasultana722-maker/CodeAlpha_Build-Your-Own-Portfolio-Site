@@ -1,0 +1,600 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Fatema Sultana — Full-Stack Developer & UI/UX</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#0f1724;
+    --card: rgba(255,255,255,0.04);
+    --glass: rgba(255,255,255,0.06);
+    --muted:#9aa4b2;
+    --accent1:#5b7aff;
+    --accent2:#9b4bff;
+    --accent3:#ff67c1;
+    --glass-border: rgba(255,255,255,0.06);
+    --text:#e6eef9;
+    --radius:14px;
+    --shadow: 0 10px 30px rgba(2,6,23,0.6);
+    --page-padding:24px;
+    --transition:320ms cubic-bezier(.2,.9,.3,1);
+  }
+  :root.light{
+    --bg: linear-gradient(180deg,#f8fbff,#eef5ff);
+    --card: rgba(11,22,36,0.03);
+    --muted:#486581;
+    --text:#082032;
+    --glass-border: rgba(11,22,36,0.06);
+    --shadow: 0 10px 30px rgba(10,12,20,0.06);
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+    background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased;
+    transition:background var(--transition), color var(--transition);
+    overflow-x:hidden;
+  }
+  a{color:inherit; text-decoration:none}
+  img{max-width:100%; display:block}
+
+  /* Preloader */
+  #preloader{position:fixed; inset:0; display:grid; place-items:center; background:linear-gradient(180deg, rgba(2,6,23,0.9), rgba(2,6,23,0.95)); z-index:9999}
+  .loader{width:84px;height:84px;border-radius:20px;background:linear-gradient(135deg,var(--accent1),var(--accent2));display:grid;place-items:center;animation:rot 1.6s linear infinite}
+  .loader:after{content:'';width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,0.08);backdrop-filter: blur(4px)}
+  @keyframes rot{to{transform:rotate(360deg)}}
+  #preloader.hidden{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .4s,visibility .4s}
+
+  header{position:fixed;left:0;right:0;top:16px;z-index:1000;padding:10px var(--page-padding);display:flex;justify-content:center}
+  .nav-wrap{max-width:1200px;width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px;border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid var(--glass-border);backdrop-filter: blur(8px);box-shadow:var(--shadow)}
+  .brand{display:flex;gap:12px;align-items:center}
+  .logo{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,var(--accent1),var(--accent2));display:grid;place-items:center;font-weight:800;color:white}
+  .brand h4{margin:0;font-size:16px}
+  .brand p{margin:0;font-size:12px;color:var(--muted)}
+  nav.main{display:flex;gap:10px;align-items:center}
+  nav.main a{padding:8px 12px;border-radius:10px;font-weight:600;font-size:14px;color:var(--text);opacity:0.95}
+  nav.main a:hover{transform:translateY(-4px);box-shadow:0 6px 24px rgba(0,0,0,0.15)}
+  .controls{display:flex;gap:10px;align-items:center}
+  .btn{display:inline-flex;gap:8px;align-items:center;padding:10px 12px;border-radius:12px;background:linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));border:1px solid var(--glass-border);cursor:pointer;font-weight:700}
+  .btn.primary{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:white;border:0;box-shadow:0 10px 30px rgba(91,122,255,0.14)}
+
+  .container{max-width:1200px;margin:120px auto;padding:0 var(--page-padding)}
+  section{margin-bottom:80px;opacity:0;transform:translateY(40px);transition:opacity .56s ease, transform .56s ease}
+  section.active{opacity:1;transform:translateY(0)}
+
+  /* Hero */
+  .hero{display:grid;grid-template-columns:1fr 420px;gap:36px;align-items:center;margin-top:6px;position:relative}
+  .hero-left h1{font-size:44px;line-height:1.02;margin:0 0 14px;background:linear-gradient(90deg,var(--accent1),var(--accent2));-webkit-background-clip:text;color:transparent;font-weight:800}
+  .hero-left p{color:var(--muted);font-size:18px;margin:0 0 18px;max-width:680px}
+  .cta-row{display:flex;gap:12px;align-items:center}
+  .download{display:inline-flex;gap:10px;align-items:center;padding:12px 16px;border-radius:12px;background:linear-gradient(90deg,var(--accent1),var(--accent2));color:white;font-weight:700}
+  .ghost{padding:10px 12px;border-radius:10px;border:1px solid var(--glass-border);color:var(--text);background:transparent}
+
+  .hero-card{width:420px;height:420px;border-radius:20px;overflow:hidden;background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));border:1px solid var(--glass-border);box-shadow:0 20px 50px rgba(2,6,23,0.6);transform-style:preserve-3d;transition:transform .3s ease;position:relative}
+  .hero-card .img{width:100%;height:100%;background-size:cover;background-position:center;transform:translateZ(30px) scale(1.02)}
+  .hero-card .overlay{position:absolute;inset:12px;border-radius:14px;pointer-events:none;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.0))}
+
+  /* Projects */
+  .projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+  .card{background:var(--card);border-radius:14px;padding:16px;border:1px solid var(--glass-border);box-shadow:0 8px 40px rgba(1,6,12,0.45);transition:transform .32s,var(--transition);overflow:hidden;cursor:pointer}
+  .card:focus{outline:3px solid rgba(91,122,255,0.18);outline-offset:4px}
+  .card:hover{transform:translateY(-8px);box-shadow:0 20px 60px rgba(1,6,12,0.6)}
+  .thumb{height:140px;border-radius:10px;background-size:cover;background-position:center;margin-bottom:12px;transition:transform .34s ease}
+  .card:hover .thumb{transform:scale(1.06)}
+  .chip{padding:6px 10px;border-radius:999px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));font-size:13px;border:1px solid var(--glass-border)}
+
+  /* Skills */
+  .skills-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:12px}
+  .skill-card{background:var(--card);padding:14px;border-radius:12px;border:1px solid var(--glass-border);min-height:120px;display:flex;flex-direction:column;gap:10px}
+  .skill-card h4{margin:0}
+  .tags{display:flex;flex-wrap:wrap;gap:8px}
+  .tag{padding:8px 10px;border-radius:999px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));font-weight:700;border:1px solid var(--glass-border)}
+
+  /* Contact */
+  .contact-grid{display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start}
+  .form{background:var(--card);padding:18px;border-radius:12px;border:1px solid var(--glass-border)}
+  .form input,.form textarea{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--text);margin-bottom:10px}
+  .form button{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;border:0;cursor:pointer;background:linear-gradient(90deg,var(--accent1),var(--accent2));color:white;font-weight:700}
+
+  footer{padding:40px 20px;text-align:center;color:var(--muted)}
+
+  /* Cursor */
+  .cursor{position:fixed;left:0;top:0;width:46px;height:46px;border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);display:grid;place-items:center;background:linear-gradient(90deg,var(--accent1),var(--accent2));box-shadow:0 10px 40px rgba(91,122,255,0.16);mix-blend-mode:overlay;transition:transform .16s linear,width .16s linear,height .16s linear,opacity .16s linear;opacity:.95}
+  .cursor.small{width:18px;height:18px;background:rgba(255,255,255,0.06);box-shadow:none;mix-blend-mode:normal}
+  .cursor.hidden{opacity:0}
+
+  @media (max-width:980px){
+    .hero{grid-template-columns:1fr;gap:20px}
+    .hero-card{width:320px;height:320px;margin:0 auto}
+    .skills-grid{grid-template-columns:repeat(2,1fr)}
+    .contact-grid{grid-template-columns:1fr}
+  }
+  @media (max-width:640px){
+    .brand h4{display:none}
+    .skills-grid{grid-template-columns:1fr}
+    .nav-wrap{padding:8px 12px}
+    .controls{display:none}
+  }
+
+  .show-focus :focus{outline:3px solid rgba(122,108,255,0.35); outline-offset:3px;border-radius:6px}
+
+  /* Modal styles */
+  .modal-backdrop{position:fixed;inset:0;display:grid;place-items:center;background:linear-gradient(180deg, rgba(2,6,23,0.6), rgba(2,6,23,0.8));z-index:2000;opacity:0;pointer-events:none;transition:opacity .18s ease}
+  .modal{width:min(920px,94%);border-radius:16px;overflow:hidden;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid var(--glass-border);box-shadow:0 30px 90px rgba(2,6,23,0.7);transform:translateY(24px) scale(.98);transition:transform .22s ease}
+  .modal .modal-header{display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid var(--glass-border)}
+  .modal .modal-body{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:22px}
+  .modal .modal-img{border-radius:12px;min-height:320px;background-size:cover;background-position:center}
+  .modal .modal-actions{margin-top:auto;display:flex;gap:10px}
+  @media (max-width:740px){ .modal .modal-body{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- Preloader -->
+<div id="preloader" aria-hidden="true"><div class="loader" role="img" aria-label="Loading"></div></div>
+
+<!-- Cursor -->
+<div id="cursor" class="cursor small" aria-hidden="true"></div>
+
+<!-- Header -->
+<header>
+  <div class="nav-wrap" role="navigation" aria-label="Main navigation">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">FS</div>
+      <div>
+        <h4>Fatema Sultana</h4>
+        <p>Full-Stack Developer • UI/UX</p>
+      </div>
+    </div>
+
+    <nav class="main" aria-label="Primary links">
+      <a href="#about">About</a>
+      <a href="#projects">Projects</a>
+      <a href="#skills">Skills</a>
+      <a href="#contact">Contact</a>
+    </nav>
+
+    <div class="controls" aria-hidden="true">
+      <button id="themeToggle" class="btn" title="Toggle theme" aria-pressed="false">🌗 Theme</button>
+      <a id="downloadCV" class="btn" href="#" download>⬇ Download CV</a>
+      <a class="btn" href="https://linkedin.com/in/fatema-sultana-b93607354" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="btn primary" href="#contact">Hire Me</a>
+    </div>
+  </div>
+</header>
+
+<main class="container page-fade" id="page">
+  <!-- HERO -->
+  <section class="hero" id="home" aria-labelledby="hero-title">
+    <div class="hero-left">
+      <h1 id="hero-title">Hi — I'm Fatema Sultana<br>
+        <small style="font-weight:600; font-size:18px; color:var(--muted)">I build full-stack web apps & beautiful, accessible interfaces</small></h1>
+      <p>
+I’m a full-stack developer who crafts beautiful, accessible, and high-performing web applications.With a frontend-first mindset and solid backend expertise, I build pixel-perfect interfaces, robust APIs, and seamless full-stack products.</p>
+      <div class="cta-row">
+        <a class="download" href="#contact">Hire Me — Let's Talk</a>
+        <button class="btn ghost" id="seeWork">See my work</button>
+      </div>
+
+      <div style="margin-top:18px;display:flex;gap:12px;align-items:center">
+        <a aria-label="GitHub" href="https://github.com/fatemasultana722-maker" title="GitHub" target="_blank" rel="noopener" style="opacity:.95">GitHub</a>
+        <a aria-label="LinkedIn" href="https://linkedin.com/in/fatema-sultana-b93607354" title="LinkedIn" target="_blank" rel="noopener" style="opacity:.95">LinkedIn</a>
+        <a aria-label="Email" href="fatemasultanaprova90@gmail.com" title="Email" style="opacity:.95">Email</a>
+      </div>
+    </div>
+
+    <div class="hero-card" id="heroCard" aria-hidden="true">
+      <div class="img" role="img" aria-label="Fatema Sultana profile art" style="background-image:url('image.png')"></div>
+
+      <div class="overlay" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" aria-labelledby="aboutTitle">
+    <h2 id="aboutTitle">About</h2>
+    <p style="max-width:900px;color:var(--muted);margin:8px 0 18px">
+      I'm a full-stack developer focusing on modern web experiences — React/Next.js for frontend, Node.js/Express for backend, and MongoDB/MySQL for data. I care about accessibility, performance and shipping code that's maintainable.
+    </p>
+
+    <div style="display:flex;gap:18px;flex-wrap:wrap">
+      <div style="flex:1;min-width:240px">
+        <div style="background:var(--card);padding:18px;border-radius:12px;border:1px solid var(--glass-border)">
+          <h3 style="margin:0 0 8px">Services</h3>
+          <p style="color:var(--muted);margin:0">Full-Stack Development • UI/UX • Design Systems • Performance Optimization • Consulting</p>
+        </div>
+      </div>
+
+      <div style="flex:1;min-width:240px">
+        <div style="background:var(--card);padding:18px;border-radius:12px;border:1px solid var(--glass-border)">
+          <h3 style="margin:0 0 8px">Experience</h3>
+          <p style="color:var(--muted);margin:0">Worked with startups and agencies building production web products and dashboards.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects" aria-labelledby="projectsTitle">
+    <h2 id="projectsTitle">Selected Projects</h2>
+    <div class="projects-grid" id="projectsGrid" role="list">
+      <!-- existing projects -->
+      <article class="card" tabindex="0" role="button" data-title="Ultra Portfolio" data-desc="A premium portfolio with glass UI, animations and optimized assets." data-img="https://images.unsplash.com/photo-1506765515384-028b60a970df?q=80&w=1200" data-live="#" data-code="#">
+        <div class="thumb" style="background-image:url('img2.jpg')"></div>
+        <h3>Ultra Portfolio</h3>
+        <p style="color:var(--muted)">Pixel-perfect personal website with interactions and deploy pipeline.</p>
+        <div style="margin-top:12px" class="meta" aria-hidden="true"><span class="chip">HTML</span> <span class="chip">CSS</span> <span class="chip">JS</span></div>
+      </article>
+
+      <article class="card" tabindex="0" role="button" data-title="Analytics Dashboard" data-desc="Real-time dashboard with charts, filters, and user auth." data-img="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1200" data-live="#" data-code="#">
+        <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1200')"></div>
+        <h3>Analytics Dashboard</h3>
+        <p style="color:var(--muted)">Interactive admin interface, built with React and charting libraries.</p>
+        <div style="margin-top:12px" class="meta" aria-hidden="true"><span class="chip">React</span> <span class="chip">Charts</span></div>
+      </article>
+
+      <article class="card" tabindex="0" role="button" data-title="MERN E-commerce" data-desc="Full e-commerce flow: product listing, cart, payments, admin panel." data-img="https://images.unsplash.com/photo-1503602642458-232111445657?q=80&w=1200" data-live="#" data-code="#">
+        <div class="thumb" style="background-image:url('img3.jpg')"></div>
+        <h3>MERN E-commerce</h3>
+        <p style="color:var(--muted)">MERN stack store with order management and secure auth.</p>
+        <div style="margin-top:12px" class="meta" aria-hidden="true"><span class="chip">MERN</span> <span class="chip">Stripe</span></div>
+      </article>
+
+      <!-- new projects requested + extras -->
+      <article class="card" tabindex="0" role="button" data-title="Traveling Website" data-desc="Full front-end design with animations, gallery, and login UI for travellers." data-img="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200" data-live="#" data-code="#">
+        <div class="thumb" style="background-image:url('img4.jpg')"></div>
+        <h3>Traveling Website</h3>
+        <p style="color:var(--muted)">Responsive travel site with animated gallery, itinerary pages, and login UI.</p>
+        <div style="margin-top:12px" class="meta" aria-hidden="true"><span class="chip">HTML</span> <span class="chip">CSS</span> <span class="chip">Animations</span></div>
+      </article>
+
+      <article class="card" tabindex="0" role="button" data-title="SMS Controlling System (UI)" data-desc="User-friendly admin panel UI for managing SMS broadcasts and logs." data-img="https://images.unsplash.com/photo-1528424262440-3f8e7a9aa2b4?q=80&w=1200" data-live="#" data-code="#">
+        <div class="thumb" style="background-image:url('img5.jpg')"></div>
+        <h3>SMS Controlling System (UI)</h3>
+        <p style="color:var(--muted)">Admin UI prototype for scheduling SMS, templates, reports and user access control.</p>
+        <div style="margin-top:12px" class="meta" aria-hidden="true"><span class="chip">UI</span> <span class="chip">Admin</span></div>
+      </article>
+
+      <article class="card" tabindex="0" role="button" data-title="School Management System (Frontend)" data-desc="Clean, modular front-end for managing students, classes, and reports." data-img="https://images.unsplash.com/photo-1529070538774-1843cb3265df?q=80&w=1200" data-live="#" data-code="#">
+        <div class="thumb" style="background-image:url('img6.jpg')"></div>
+        <h3>School Management System (Frontend)</h3>
+        <p style="color:var(--muted)">Well-structured front-end pages for student, teacher, class, and report management.</p>
+        <div style="margin-top:12px" class="meta" aria-hidden="true"><span class="chip">React</span> <span class="chip">Design</span></div>
+      </article>
+
+      <article class="card" tabindex="0" role="button" data-title="Whiteboard Web App" data-desc="Interactive JavaScript canvas drawing tool with collaboration-ready UI." data-img="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=1200" data-live="#" data-code="#">
+        <div class="thumb" style="background-image:url('img7.jpg')"></div>
+        <h3>Whiteboard Web App</h3>
+        <p style="color:var(--muted)">Interactive canvas with drawing tools, layers, and export features.</p>
+        <div style="margin-top:12px" class="meta" aria-hidden="true"><span class="chip">Canvas</span> <span class="chip">JS</span></div>
+      </article>
+
+      <article class="card" tabindex="0" role="button" data-title="Checker Game" data-desc="JavaScript-based board game with nice UI and sound effects." data-img="https://images.unsplash.com/photo-1545239351-1141bd82e8a6?q=80&w=1200" data-live="#" data-code="#">
+        <div class="thumb" style="background-image:url('img8.jpg')"></div>
+        <h3>Checker Game</h3>
+        <p style="color:var(--muted)">Fun, interactive checkers game built with vanilla JS and clean UI.</p>
+        <div style="margin-top:12px" class="meta" aria-hidden="true"><span class="chip">Game</span> <span class="chip">JavaScript</span></div>
+      </article>
+
+      <!-- extras -->
+      <article class="card" tabindex="0" role="button" data-title="Chat UI Prototype" data-desc="Real-time chat UI prototype with message reactions and file preview." data-img="https://images.unsplash.com/photo-1494173853739-c21f58b16055?q=80&w=1200" data-live="#" data-code="#">
+        <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1494173853739-c21f58b16055?q=80&w=1200')"></div>
+        <h3>Chat UI Prototype</h3>
+        <p style="color:var(--muted)">Clean chat interface optimized for accessibility and mobile-first behavior.</p>
+        <div style="margin-top:12px" class="meta" aria-hidden="true"><span class="chip">React</span> <span class="chip">UX</span></div>
+      </article>
+
+      <article class="card" tabindex="0" role="button" data-title="Task Manager App" data-desc="Productivity app with kanban, filters, and local persistence." data-img="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?q=80&w=1200" data-live="#" data-code="#">
+        <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?q=80&w=1200')"></div>
+        <h3>Task Manager App</h3>
+        <p style="color:var(--muted)">Kanban board, drag & drop, and local storage sync for lightweight productivity.</p>
+        <div style="margin-top:12px" class="meta" aria-hidden="true"><span class="chip">JS</span> <span class="chip">Productivity</span></div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills" aria-labelledby="skillsTitle">
+    <h2 id="skillsTitle">Skills — Full-Stack & Tools</h2>
+
+    <div class="skills-grid" role="list">
+      <div class="skill-card" role="listitem">
+        <h4>Frontend</h4>
+        <div class="tags" aria-hidden="true">
+          <span class="tag">HTML5</span>
+          <span class="tag">CSS3</span>
+          <span class="tag">JavaScript</span>
+          <span class="tag">React</span>
+          <span class="tag">Next.js</span>
+          <span class="tag">TypeScript</span>
+          <span class="tag">Tailwind</span>
+          <span class="tag">Animations (GSAP / Framer)</span>
+        </div>
+      </div>
+
+      <div class="skill-card" role="listitem">
+        <h4>Backend & Databases</h4>
+        <div class="tags" aria-hidden="true">
+          <span class="tag">Node.js</span>
+          <span class="tag">Express.js</span>
+          <span class="tag">REST APIs</span>
+          <span class="tag">GraphQL</span>
+          <span class="tag">MongoDB</span>
+          <span class="tag">MySQL</span>
+          <span class="tag">Firebase</span>
+          <span class="tag">Authentication</span>
+        </div>
+      </div>
+
+      <div class="skill-card" role="listitem">
+        <h4>Tools & DevOps</h4>
+        <div class="tags" aria-hidden="true">
+          <span class="tag">Git & GitHub</span>
+          <span class="tag">Docker (Basic)</span>
+          <span class="tag">CI / CD</span>
+          <span class="tag">Vercel / Netlify</span>
+          <span class="tag">cPanel</span>
+          <span class="tag">SEO Basics</span>
+          <span class="tag">Performance Tuning</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" aria-labelledby="contactTitle">
+    <h2 id="contactTitle">Contact</h2>
+    <div class="contact-grid">
+      <div class="form" aria-label="Contact form">
+        <form id="contactForm">
+          <input type="text" id="name" name="name" placeholder="Your name" required aria-required="true"/>
+          <input type="email" id="email" name="email" placeholder="Your email" required aria-required="true"/>
+          <input type="text" id="subject" name="subject" placeholder="Subject" />
+          <textarea id="message" name="message" rows="6" placeholder="Message" required aria-required="true"></textarea>
+          <div style="display:flex;gap:10px;align-items:center">
+            <button type="submit">Send Message</button>
+            <a class="btn ghost" href="mailto:example@gmail.com">Email Me</a>
+          </div>
+        </form>
+        <div id="formMsg" style="color:var(--muted);margin-top:10px" aria-live="polite"></div>
+      </div>
+
+      <div style="background:var(--card);padding:18px;border-radius:12px;border:1px solid var(--glass-border)">
+        <h3 style="margin-top:0">Let's build something great</h3>
+        <p style="color:var(--muted)">Email: <a href="fatemasultanaprova90@gmail.com">fatemasultanaprova90@gmail.com</a></p>
+        <p style="color:var(--muted)">Location: Dhaka, Bangladesh</p>
+        <div style="margin-top:12px"><a class="btn primary" href="#contact">Hire Me</a></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div style="display:flex;gap:16px;justify-content:center;align-items:center;flex-wrap:wrap;">
+      <div style="font-weight:700">Fatema Sultana</div>
+      <div style="color:var(--muted)">•</div>
+      <div style="color:var(--muted)">© <span id="year"></span></div>
+      <div style="width:1px;height:22px;background:var(--glass-border)"></div>
+      <div style="color:var(--muted)">Built with ❤️ & attention to detail</div>
+    </div>
+  </footer>
+</main>
+
+<!-- Modal -->
+<div id="modalBackdrop" class="modal-backdrop" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-header">
+      <h3 id="modalTitle" style="margin:0">Project</h3>
+      <button id="modalClose" class="btn" style="margin-left:auto;background:transparent;border:0;color:var(--muted);font-size:22px;cursor:pointer" aria-label="Close modal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div id="modalImg" class="modal-img" aria-hidden="true" style="background-image:url('');"></div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <h3 id="modalName">Project Name</h3>
+        <p id="modalDesc" style="color:var(--muted)">Project description</p>
+        <div style="margin-top:auto;display:flex;gap:10px" id="modalLinks">
+          <a id="modalView" class="btn primary" href="#" target="_blank" rel="noopener">View Live</a>
+          <a id="modalCode" class="btn ghost" href="#" target="_blank" rel="noopener">Source</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* Utilities */
+const preloader = document.getElementById('preloader');
+const page = document.getElementById('page');
+const yearEl = document.getElementById('year');
+if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+/* Hide preloader */
+window.addEventListener('load', ()=> {
+  setTimeout(()=> {
+    if (preloader) preloader.classList.add('hidden');
+    if (page) page.classList.add('in');
+    document.querySelectorAll('section').forEach(s=>s.classList.add('active'));
+  }, 500);
+});
+
+/* Theme toggle */
+const themeToggle = document.getElementById('themeToggle');
+function applyTheme(t){
+  if (t === 'light') {
+    document.documentElement.classList.add('light');
+    themeToggle.setAttribute('aria-pressed','true'); themeToggle.textContent = '🌞 Light';
+  } else {
+    document.documentElement.classList.remove('light');
+    themeToggle.setAttribute('aria-pressed','false'); themeToggle.textContent = '🌗 Dark';
+  }
+  try { localStorage.setItem('site-theme', t); } catch(e){}
+}
+const saved = (function(){
+  try { return localStorage.getItem('site-theme') || 'dark'; } catch(e){ return 'dark'; }
+})();
+applyTheme(saved);
+if (themeToggle) themeToggle.addEventListener('click', ()=> applyTheme(document.documentElement.classList.contains('light') ? 'dark' : 'light'));
+
+/* Cursor */
+const cursor = document.getElementById('cursor');
+let mouseX=-100,mouseY=-100,targetX=-100,targetY=-100;
+document.addEventListener('mousemove', e=>{ targetX=e.clientX; targetY=e.clientY; if(cursor) cursor.classList.remove('hidden') });
+function raf(){
+  mouseX += (targetX - mouseX) * 0.18;
+  mouseY += (targetY - mouseY) * 0.18;
+  if (cursor) cursor.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%,-50%)`;
+  requestAnimationFrame(raf);
+}
+raf();
+document.querySelectorAll('a, button, .card').forEach(el=>{
+  el.addEventListener('mouseenter', ()=> cursor.classList.remove('small'));
+  el.addEventListener('mouseleave', ()=> cursor.classList.add('small'));
+});
+document.addEventListener('mouseleave', ()=> cursor.classList.add('hidden'));
+document.addEventListener('mouseenter', ()=> cursor.classList.remove('hidden'));
+
+/* Hero card parallax */
+const heroCard = document.getElementById('heroCard');
+if (heroCard) {
+  heroCard.addEventListener('mousemove', (e)=>{
+    const rect = heroCard.getBoundingClientRect();
+    const cx = rect.left + rect.width/2;
+    const cy = rect.top + rect.height/2;
+    const dx = e.clientX - cx;
+    const dy = e.clientY - cy;
+    const rx = (dy / rect.height) * -8;
+    const ry = (dx / rect.width) * 8;
+    heroCard.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) translateZ(0)`;
+  });
+  heroCard.addEventListener('mouseleave', ()=> heroCard.style.transform='rotateX(0deg) rotateY(0deg)');
+}
+
+/* Smooth scroll */
+document.querySelectorAll('nav.main a, #seeWork, .download').forEach(el=>{
+  el.addEventListener('click', ev=>{
+    const href = el.getAttribute('href');
+    if (href && href.startsWith('#')) {
+      ev.preventDefault();
+      const target = document.querySelector(href);
+      if (target) target.scrollIntoView({behavior:'smooth', block:'start'});
+    }
+  });
+});
+
+/* Intersection reveal */
+const sections = document.querySelectorAll('section');
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(ent=>{
+    if (ent.isIntersecting) ent.target.classList.add('active');
+  });
+},{threshold:0.15});
+sections.forEach(s=>io.observe(s));
+
+/* Projects modal */
+const cards = document.querySelectorAll('.card');
+const modalBackdrop = document.getElementById('modalBackdrop');
+const modalImg = document.getElementById('modalImg');
+const modalName = document.getElementById('modalName');
+const modalDesc = document.getElementById('modalDesc');
+const modalView = document.getElementById('modalView');
+const modalCode = document.getElementById('modalCode');
+const modalClose = document.getElementById('modalClose');
+
+function openModal(title, desc, img, live, code){
+  if(modalName) modalName.textContent = title || 'Project';
+  if(modalDesc) modalDesc.textContent = desc || '';
+  if(modalImg) modalImg.style.backgroundImage = img ? `url('${img}')` : '';
+  if(modalView) modalView.href = live || '#';
+  if(modalCode) modalCode.href = code || '#';
+  if(modalBackdrop) {
+    modalBackdrop.style.opacity = '1';
+    modalBackdrop.style.pointerEvents = 'auto';
+    const modalEl = modalBackdrop.querySelector('.modal');
+    if(modalEl) modalEl.style.transform = 'translateY(0) scale(1)';
+    modalBackdrop.setAttribute('aria-hidden','false');
+    // focus management
+    modalClose.focus();
+  }
+}
+function closeModal(){
+  if(modalBackdrop) {
+    modalBackdrop.style.opacity = '0';
+    modalBackdrop.style.pointerEvents = 'none';
+    const modalEl = modalBackdrop.querySelector('.modal');
+    if(modalEl) modalEl.style.transform = 'translateY(24px) scale(.98)';
+    modalBackdrop.setAttribute('aria-hidden','true');
+  }
+}
+
+cards.forEach(card=>{
+  card.addEventListener('click', ()=> openModal(card.dataset.title || 'Project', card.dataset.desc || '', card.dataset.img || '', card.dataset.live || '#', card.dataset.code || '#'));
+  card.addEventListener('keydown', e=> { if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); card.click(); } });
+});
+if (modalClose) modalClose.addEventListener('click', closeModal);
+if (modalBackdrop) modalBackdrop.addEventListener('click', e=> { if (e.target === modalBackdrop) closeModal(); });
+document.addEventListener('keydown', e=> { if (e.key === 'Escape') closeModal(); });
+
+/* Contact form — simple client-side simulation */
+const contactForm = document.getElementById('contactForm');
+const formMsg = document.getElementById('formMsg');
+if (contactForm){
+  contactForm.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const message = document.getElementById('message').value.trim();
+    if (!name || !email || !message) { formMsg.style.color = 'var(--accent3)'; formMsg.textContent = 'Please fill required fields.'; return; }
+    // simulate send (replace this with real API or mailto behaviour)
+    formMsg.style.color = 'var(--muted)';
+    formMsg.textContent = 'Thanks — your message was sent (simulated). I will contact you soon.';
+    contactForm.reset();
+  });
+}
+
+/* small animated svg line in hero (append) */
+(function addHeroSVG(){
+  const heroEl = document.querySelector('.hero');
+  if (!heroEl) return;
+  const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('class','hero-lines');
+  svg.setAttribute('viewBox','0 0 1200 200');
+  svg.setAttribute('preserveAspectRatio','none');
+  svg.style.position='absolute'; svg.style.inset='auto 0 0 0'; svg.style.pointerEvents='none'; svg.style.height='160px';
+  // use computed accents (fallbacks in case)
+  const accent1 = getComputedStyle(document.documentElement).getPropertyValue('--accent1').trim() || '#5b7aff';
+  const accent2 = getComputedStyle(document.documentElement).getPropertyValue('--accent2').trim() || '#9b4bff';
+  svg.innerHTML = `
+    <defs><linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="${accent1}"/><stop offset="1" stop-color="${accent2}"/></linearGradient></defs>
+    <path d="M0,120 C200,20 400,220 600,120 C800,20 1000,220 1200,120" fill="none" stroke="url(#g1)" stroke-width="2" stroke-linecap="round">
+      <animate attributeName="stroke-dashoffset" from="0" to="-1200" dur="6s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.06;0.2;0.06" dur="4s" repeatCount="indefinite"/>
+    </path>`;
+  heroEl.appendChild(svg);
+})();
+
+/* Enhance keyboard focus visibility for keyboard users */
+(function keyboardFocusEnhance(){
+  function handleFirstTab(e){
+    if(e.key === 'Tab'){
+      document.body.classList.add('show-focus');
+      window.removeEventListener('keydown', handleFirstTab);
+      window.addEventListener('mousedown', removeFocusOnMouse);
+    }
+  }
+  function removeFocusOnMouse(){ document.body.classList.remove('show-focus'); window.removeEventListener('mousedown', removeFocusOnMouse); window.addEventListener('keydown', handleFirstTab); }
+  window.addEventListener('keydown', handleFirstTab);
+})();
+
+/* Make project cards accessible as links for screen readers by adding aria-labels */
+document.querySelectorAll('.card').forEach(c=>{
+  const title = c.dataset.title || c.querySelector('h3')?.textContent || 'Project';
+  c.setAttribute('aria-label', `Open project ${title}`);
+});
+</script>
+</body>
+</html>
